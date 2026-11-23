@@ -59,16 +59,15 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <ColorPicker x:Name="Picker" Color="#64D6C4" IsAlphaEnabled="False"
+                        <ColorPicker x:Name="Picker" ColorChanged="ColorChanged" Color="#64D6C4" IsAlphaEnabled="False"
                                      IsColorChannelTextInputVisible="False" IsHexInputVisible="True"
                                      IsColorPreviewVisible="True" HorizontalAlignment="Left" />
                         <StackPanel x:Name="LightingControls" Grid.Column="1" Spacing="10">
                             <TextBlock x:Name="LightingHeading" FontSize="21" FontWeight="SemiBold" />
                             <ComboBox x:Name="Channels" HorizontalAlignment="Stretch" />
                             <ComboBox x:Name="Mode" SelectionChanged="ModeChanged" HorizontalAlignment="Stretch" />
-                            <Slider x:Name="Brightness" Minimum="0" Maximum="100" Value="30" StepFrequency="1" />
-                            <NumberBox x:Name="LedCount" Minimum="1" Maximum="120" Value="1" SpinButtonPlacementMode="Compact" />
-                            <Button x:Name="ApplyButton" Click="ApplyClicked" Style="{StaticResource AccentButtonStyle}" IsEnabled="False" />
+                            <Slider x:Name="Brightness" ValueChanged="BrightnessChanged" Minimum="0" Maximum="100" Value="30" StepFrequency="1" />
+                            <NumberBox x:Name="LedCount" ValueChanged="LedCountChanged" Minimum="1" Maximum="120" Value="1" SpinButtonPlacementMode="Compact" />
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -86,9 +85,21 @@
                             <Button x:Name="SaveProfileButton" Grid.Column="1" Click="SaveClicked" />
                             <Button x:Name="DeleteProfileButton" Grid.Column="2" Click="DeleteClicked" />
                         </Grid>
-                        <ComboBox x:Name="Profiles" SelectionChanged="ProfileSelected" HorizontalAlignment="Stretch" />
+                        <Grid ColumnSpacing="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <ComboBox x:Name="Profiles" SelectionChanged="ProfileSelected" HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Bottom" />
+                            <ComboBox x:Name="StartupProfile" Grid.Column="1" SelectionChanged="StartupProfileChanged"
+                                      HorizontalAlignment="Stretch" />
+                        </Grid>
                     </StackPanel>
                 </Border>
+                <CheckBox x:Name="RestoreLighting" Checked="RestoreLightingChanged" Unchecked="RestoreLightingChanged">
+                    <TextBlock x:Name="RestoreLightingLabel" TextWrapping="Wrap" />
+                </CheckBox>
                 <Grid ColumnSpacing="16">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />

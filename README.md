@@ -16,18 +16,20 @@ A native Windows 11 RGB controller for the ASUS TUF Gaming B850-Plus WiFi.
 
 - Native WinUI 3 window with a Mica backdrop, custom title bar, and per-monitor DPI awareness.
 - ARGB channel selection, static color and brightness, and firmware-driven color cycle and rainbow modes.
-- Local profiles and optional launch at Windows sign-in.
+- Local profiles, optional launch at Windows sign-in, and a notification-area icon.
+- Automatic controller detection at launch and live updates for color, effect, brightness, and LED count.
 - English, German, Spanish, French, and Portuguese. AuraLite follows the Windows display language by default. The language menu changes the interface immediately and remembers your choice.
 - Direct access to the existing Windows HID interface. No separate RGB service, driver installation, OpenRGB, or Armoury Crate required.
 
 ## Getting started
 
-1. Download and extract **AuraLite-Windows-x64.zip**. Keep its files together and run **AuraLite.exe**. The ZIP includes the .NET and Windows App SDK runtimes.
-2. Select **Detect controller** to read the controller firmware and channel configuration.
-3. Select an ARGB channel. For static lighting, set the color, brightness, and number of LEDs on that output.
-4. Select **Review reports and apply**. AuraLite shows the exact HID output reports for your approval.
+1. Download and run **AuraLite.exe** on Windows 11 x64. The single executable includes the .NET and Windows App SDK runtimes and can be renamed.
+2. AuraLite detects the controller automatically. The **Detect controller** button is available if you need to try again.
+3. Select an ARGB channel, then adjust the color, effect, brightness, or LED count. AuraLite applies the changes as you edit. A burst of slider or picker input is grouped into one hardware update per affected channel. Firmware effects use the controller's own brightness.
 
-Profiles are stored in `%LOCALAPPDATA%\AuraLite\profiles.json`. Loading a profile fills the controls. Launching at sign-in opens the app. Applying a profile to hardware still requires approval.
+Minimizing AuraLite hides the window in the Windows notification area. Click the AuraLite icon to reopen it, or right-click it and choose **Quit**. Closing the window exits the app.
+
+Profiles are stored in `%LOCALAPPDATA%\AuraLite\profiles.json`. Selecting a profile applies its channel, LED count, color, and effect when the controller is available. By default, the last selected profile loads into the editor at launch. Use **Startup profile** to choose a fixed profile instead. The **Restore lighting at launch and after sleep** checkbox is off by default. When enabled, AuraLite applies the startup profile after detecting the controller. After sleep, it restores the last lighting it successfully sent to the matching controller. For wake events, leave AuraLite running or minimized. To reapply after a Windows restart without opening the app manually, also enable **Open AuraLite at Windows sign-in**. The controller on the tested board falls back to its rainbow effect across sleep or reboot, so this is a software restore.
 
 ## Hardware validation
 
@@ -38,13 +40,13 @@ Profiles are stored in `%LOCALAPPDATA%\AuraLite\profiles.json`. Loading a profil
 | Firmware | `AULA3-AR32-0309`, three ARGB channels detected |
 | Static lighting | One pixel confirmed on ARGB 1 |
 | Color cycle | Confirmed on ARGB 1, including after AuraLite exited |
-| Rainbow and reboot persistence | Pending live verification |
+| Controller state after sleep or reboot | Reported to fall back to rainbow |
 
-AuraLite uses the documented firmware and configuration requests before offering a lighting change. State-changing reports are gated by a preview. The app does not send flash-save commands. A successful write confirms delivery through Windows, and the lighting itself provides visual confirmation.
+Before applying changes, AuraLite rechecks the detected controller and uses the documented lighting reports. Hardware writes are serialized, with no continuous refresh loop or flash-save command.
 
 ### Command-line probe
 
-Run the separately downloadable probe from PowerShell. `list` inspects Windows HID metadata. `status` reads firmware and channel counts.
+The optional developer probe can be built from source and run from PowerShell. `list` inspects Windows HID metadata. `status` reads firmware and channel counts.
 
 ```powershell
 .\AuraLite.Probe.exe list

@@ -5,10 +5,10 @@ namespace AuraLite;
 internal enum Phrase
 {
     Controller, Detect, Ready, Detecting, Detected, Unavailable, Lighting, Channel, ChooseChannel,
-    Mode, Static, Cycle, Rainbow, Brightness, LedCount, Review, Profiles, ProfileName, Save, Delete, Load,
-    Autostart, Language, WindowsDefault, On, Off, Settings, Confirm, Send, Cancel, Sent, Canceled,
-    CheckLighting, NoChange, SendFailed, ConfigChanged, MissingChannel, InvalidCount, MissingName,
-    Saved, Deleted, MissingPath, ErrorDetails
+    Mode, Static, Cycle, Rainbow, Brightness, LedCount, Profiles, ProfileName, Save, Delete, Load,
+    Autostart, Language, WindowsDefault, On, Off, Settings,
+    SendFailed, ConfigChanged, MissingChannel, InvalidCount, MissingName,
+    Saved, Deleted, MissingPath, ErrorDetails, TrayOpen, TrayExit, RestoreLighting, LightingUpdated, StartupProfile, LastProfile
 }
 
 internal sealed class UiLanguage
@@ -33,7 +33,6 @@ internal sealed class UiLanguage
         ["Rainbow · hardware test", "Regenbogen · Hardwaretest", "Arcoíris · prueba de hardware", "Arc-en-ciel · test matériel", "Arco-íris · teste de hardware"],
         ["Brightness (%)", "Helligkeit (%)", "Brillo (%)", "Luminosité (%)", "Brilho (%)"],
         ["LEDs on selected channel", "LEDs am gewählten Ausgang", "LED del canal seleccionado", "LED du canal sélectionné", "LED do canal selecionado"],
-        ["Review reports and apply", "Reports prüfen und anwenden", "Revisar informes y aplicar", "Vérifier les rapports et appliquer", "Rever relatórios e aplicar"],
         ["Profiles", "Profile", "Perfiles", "Profils", "Perfis"],
         ["Profile name", "Profilname", "Nombre del perfil", "Nom du profil", "Nome do perfil"],
         ["Save", "Speichern", "Guardar", "Enregistrer", "Guardar"],
@@ -45,13 +44,6 @@ internal sealed class UiLanguage
         ["On", "Ein", "Activado", "Activé", "Ativado"],
         ["Off", "Aus", "Desactivado", "Désactivé", "Desativado"],
         ["Settings", "Einstellungen", "Configuración", "Paramètres", "Definições"],
-        ["Authorize HID reports", "HID-Reports freigeben", "Autorizar informes HID", "Autoriser les rapports HID", "Autorizar relatórios HID"],
-        ["Send to controller", "An Controller senden", "Enviar al controlador", "Envoyer au contrôleur", "Enviar para o controlador"],
-        ["Cancel", "Abbrechen", "Cancelar", "Annuler", "Cancelar"],
-        ["Reports sent", "Reports übertragen", "Informes enviados", "Rapports envoyés", "Relatórios enviados"],
-        ["Canceled", "Abgebrochen", "Cancelado", "Annulé", "Cancelado"],
-        ["Check the lighting on the motherboard.", "Beleuchtung am Mainboard prüfen.", "Comprueba la iluminación de la placa base.", "Vérifiez l’éclairage de la carte mère.", "Verifique a iluminação da placa-mãe."],
-        ["The lighting was not changed.", "Die Beleuchtung wurde nicht geändert.", "La iluminación no ha cambiado.", "L’éclairage n’a pas été modifié.", "A iluminação não foi alterada."],
         ["Transfer failed", "Übertragung fehlgeschlagen", "Error de transferencia", "Échec du transfert", "Falha na transferência"],
         ["The configuration changed. Detect the controller again.", "Die Konfiguration hat sich geändert. Controller erneut prüfen.", "La configuración ha cambiado. Detecta de nuevo el controlador.", "La configuration a changé. Détectez à nouveau le contrôleur.", "A configuração mudou. Detete novamente o controlador."],
         ["Select an available ARGB channel.", "Einen verfügbaren ARGB-Kanal auswählen.", "Selecciona un canal ARGB disponible.", "Sélectionnez un canal ARGB disponible.", "Selecione um canal ARGB disponível."],
@@ -60,7 +52,13 @@ internal sealed class UiLanguage
         ["Profile saved", "Profil gespeichert", "Perfil guardado", "Profil enregistré", "Perfil guardado"],
         ["Profile deleted", "Profil gelöscht", "Perfil eliminado", "Profil supprimé", "Perfil eliminado"],
         ["The app path could not be found.", "Programmpfad wurde nicht gefunden.", "No se encontró la ruta de la aplicación.", "Le chemin de l’application est introuvable.", "Não foi possível localizar o caminho da aplicação."],
-        ["Diagnostics", "Diagnose", "Diagnóstico", "Diagnostic", "Diagnóstico"]
+        ["Diagnostics", "Diagnose", "Diagnóstico", "Diagnostic", "Diagnóstico"],
+        ["Open AuraLite", "AuraLite öffnen", "Abrir AuraLite", "Ouvrir AuraLite", "Abrir AuraLite"],
+        ["Quit", "Beenden", "Salir", "Quitter", "Sair"],
+        ["Restore lighting at launch and after sleep", "Beleuchtung beim Start und nach Standby wiederherstellen", "Restaurar iluminación al iniciar y tras la suspensión", "Rétablir l’éclairage au démarrage et après veille", "Restaurar iluminação ao iniciar e após suspensão"],
+        ["Lighting updated", "Beleuchtung aktualisiert", "Iluminación actualizada", "Éclairage mis à jour", "Iluminação atualizada"],
+        ["Startup profile", "Startprofil", "Perfil de inicio", "Profil au démarrage", "Perfil de arranque"],
+        ["Last selected profile", "Zuletzt ausgewähltes Profil", "Último perfil seleccionado", "Dernier profil sélectionné", "Último perfil selecionado"]
     ];
 
     private readonly int column;

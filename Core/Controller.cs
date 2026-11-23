@@ -25,7 +25,10 @@ public readonly record struct Rgb(byte Red, byte Green, byte Blue)
 }
 
 public sealed record ControllerInfo(string Firmware, int ArgbChannels, int RgbChannels, int FixedLeds,
-    string ConfigHex);
+    string ConfigHex)
+{
+    public bool CanControl(int channel) => channel >= 1 && channel <= ArgbChannels && channel <= 4 && FixedLeds > 0;
+}
 
 public sealed class Controller : IAsyncDisposable
 {
@@ -104,7 +107,7 @@ public sealed class Controller : IAsyncDisposable
 
     internal static IEnumerable<byte[]> Build(ControllerInfo info, int channel, LightingMode mode, Rgb color, int count)
     {
-        if (channel < 1 || channel > info.ArgbChannels || channel > 4 || info.FixedLeds == 0)
+        if (!info.CanControl(channel))
             throw new ArgumentException("Für diesen ARGB-Kanal ist die Effekt-ID nicht eindeutig belegt.");
         if (!Enum.IsDefined(mode))
             throw new ArgumentException("Unbekannter Lichtmodus.");
@@ -138,12 +141,15 @@ public sealed class Controller : IAsyncDisposable
     }
 
     public async Task<bool> ApplyAsync(int channel, LightingMode mode, Rgb color, int count,
-        Func<string, Task<bool>> confirm)
+        Func<string, Task<bool>>? confirm = null)
     {
         byte[][] frames = Build(Info, channel, mode, color, count).ToArray();
-        string preview = $"Firmware {Info.Firmware} · ARGB {channel} · {mode}\n"
-            + string.Join('\n', frames.Select(frame => Convert.ToHexString(frame)));
-        if (!await confirm(preview)) return false;
+        if (confirm is not null)
+        {
+            string preview = $"Firmware {Info.Firmware} · ARGB {channel} · {mode}\n"
+                + string.Join('\n', frames.Select(frame => Convert.ToHexString(frame)));
+            if (!await confirm(preview)) return false;
+        }
 
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(2));
         int sent = 0;
