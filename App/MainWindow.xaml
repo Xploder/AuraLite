@@ -1,0 +1,103 @@
+<Window x:Class="AuraLite.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:media="using:Microsoft.UI.Xaml.Media"
+    Title="AuraLite">
+    <Window.SystemBackdrop>
+        <media:MicaBackdrop />
+    </Window.SystemBackdrop>
+    <Grid x:Name="Root" RequestedTheme="Dark" UseLayoutRounding="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TitleBar x:Name="WindowTitleBar" Title="AuraLite">
+            <TitleBar.IconSource>
+                <BitmapIconSource UriSource="ms-appx:///Assets/AuraLite.png" ShowAsMonochrome="False" />
+            </TitleBar.IconSource>
+        </TitleBar>
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Padding="28,16,28,22" Spacing="14" MaxWidth="900">
+                <Grid ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Spacing="3">
+                        <TextBlock x:Name="ControllerHeading" FontSize="27" FontWeight="SemiBold" TextWrapping="Wrap" />
+                        <TextBlock Text="ASUS TUF Gaming B850-Plus WiFi" Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                    <Button x:Name="ScanButton" Grid.Column="1" Click="ScanClicked" VerticalAlignment="Center" />
+                </Grid>
+                <InfoBar x:Name="Status" IsOpen="True" IsClosable="False" />
+                <Border CornerRadius="12" Padding="18" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <Grid x:Name="LightingGrid" ColumnSpacing="20">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup>
+                                <VisualState x:Name="Wide">
+                                    <VisualState.StateTriggers><AdaptiveTrigger MinWindowWidth="680" /></VisualState.StateTriggers>
+                                </VisualState>
+                                <VisualState x:Name="Narrow">
+                                    <VisualState.StateTriggers><AdaptiveTrigger MinWindowWidth="0" /></VisualState.StateTriggers>
+                                    <VisualState.Setters>
+                                        <Setter Target="LightingControls.(Grid.Row)" Value="1" />
+                                        <Setter Target="LightingControls.(Grid.Column)" Value="0" />
+                                        <Setter Target="LightingControls.Margin" Value="0,16,0,0" />
+                                        <Setter Target="Picker.(Grid.ColumnSpan)" Value="2" />
+                                        <Setter Target="LightingControls.(Grid.ColumnSpan)" Value="2" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <ColorPicker x:Name="Picker" Color="#64D6C4" IsAlphaEnabled="False"
+                                     IsColorChannelTextInputVisible="False" IsHexInputVisible="True"
+                                     IsColorPreviewVisible="True" HorizontalAlignment="Left" />
+                        <StackPanel x:Name="LightingControls" Grid.Column="1" Spacing="10">
+                            <TextBlock x:Name="LightingHeading" FontSize="21" FontWeight="SemiBold" />
+                            <ComboBox x:Name="Channels" HorizontalAlignment="Stretch" />
+                            <ComboBox x:Name="Mode" SelectionChanged="ModeChanged" HorizontalAlignment="Stretch" />
+                            <Slider x:Name="Brightness" Minimum="0" Maximum="100" Value="30" StepFrequency="1" />
+                            <NumberBox x:Name="LedCount" Minimum="1" Maximum="120" Value="1" SpinButtonPlacementMode="Compact" />
+                            <Button x:Name="ApplyButton" Click="ApplyClicked" Style="{StaticResource AccentButtonStyle}" IsEnabled="False" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <Border CornerRadius="12" Padding="18" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <StackPanel Spacing="10">
+                        <TextBlock x:Name="ProfilesHeading" FontSize="21" FontWeight="SemiBold" />
+                        <Grid ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="ProfileName" MaxLength="60" />
+                            <Button x:Name="SaveProfileButton" Grid.Column="1" Click="SaveClicked" />
+                            <Button x:Name="DeleteProfileButton" Grid.Column="2" Click="DeleteClicked" />
+                        </Grid>
+                        <ComboBox x:Name="Profiles" SelectionChanged="ProfileSelected" HorizontalAlignment="Stretch" />
+                    </StackPanel>
+                </Border>
+                <Grid ColumnSpacing="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ToggleSwitch x:Name="Autostart" Toggled="AutostartChanged" />
+                    <ComboBox x:Name="LanguagePicker" Grid.Column="1" MinWidth="160" SelectionChanged="LanguageChanged" />
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
