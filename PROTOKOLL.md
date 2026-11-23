@@ -11,7 +11,7 @@ AuraLite implementiert dokumentierte Schnittstellen und Paketformate eigenständ
 
 ## Freigegebene Paketformen
 
-Alle Frames haben 65 Byte einschließlich der Report-ID. Unbelegte Bytes sind null. Windows bestätigt Report-ID und Länge für Eingabe und Ausgabe vor den Abfragen. Die Anwendungslogik akzeptiert nur genau eine passende HID-Schnittstelle mit den erwarteten VID/PID-, MI- und Usage-Werten und prüft die Geräteeigenschaften auf dem exklusiv geöffneten Handle erneut. [Windows HIDP_CAPS](https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/hidpi/ns-hidpi-_hidp_caps)
+Alle Frames haben 65 Byte einschließlich der Report-ID. Unbelegte Bytes sind null. Windows bestätigt Report-ID und Länge für Eingabe und Ausgabe vor den Abfragen. Die Anwendungslogik akzeptiert nur genau eine passende HID-Schnittstelle mit den erwarteten VID/PID- und Usage-Werten und prüft die Geräteeigenschaften auf dem exklusiv geöffneten Handle erneut. [Windows HIDP_CAPS](https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/hidpi/ns-hidpi-_hidp_caps)
 
 | Zweck | Ausgabe | Erwartung |
 |---|---|---|

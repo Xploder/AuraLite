@@ -7,7 +7,7 @@ namespace AuraLite;
 public sealed record HidDevice(string Path, ushort UsagePage, ushort Usage,
     ushort InputLength, ushort OutputLength, ushort FeatureLength, bool AuraReport)
 {
-    public bool Supported => Path.StartsWith(@"\\?\HID#VID_0B05&PID_19AF&MI_02", StringComparison.OrdinalIgnoreCase)
+    public bool Supported => Hid.AuraProduct(Path) == 0x19af
         && UsagePage == 0xff72 && Usage == 0x00a1 && InputLength == 65 && OutputLength == 65 && AuraReport;
 
     public override string ToString() =>
@@ -20,7 +20,18 @@ public static class Hid
     private const int AccessDenied = 5;
     private const int BufferSmall = 0x1a;
 
-    public static IReadOnlyList<HidDevice> List()
+    internal static ushort AuraProduct(string path)
+    {
+        const string prefix = @"\\?\HID#VID_0B05&PID_";
+        ReadOnlySpan<char> value = path.AsSpan();
+        if (!value.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) ||
+            value.Length <= prefix.Length + 4 || value[prefix.Length + 4] is not ('&' or '#'))
+            return 0;
+        return ushort.TryParse(value.Slice(prefix.Length, 4), System.Globalization.NumberStyles.HexNumber,
+            System.Globalization.CultureInfo.InvariantCulture, out ushort product) ? product : (ushort)0;
+    }
+
+    public static IReadOnlyList<HidDevice> List(bool includeRelated = true)
     {
         HidD_GetHidGuid(out Guid guid);
         char[]? paths = null;
@@ -44,7 +55,8 @@ public static class Hid
         var devices = new List<HidDevice>();
         foreach (string path in new string(paths).Split('\0', StringSplitOptions.RemoveEmptyEntries))
         {
-            if (!path.StartsWith(@"\\?\HID#VID_0B05&PID_19AF&", StringComparison.OrdinalIgnoreCase))
+            ushort product = AuraProduct(path);
+            if (product != 0x19af && (!includeRelated || product is not (0x18f3 or 0x1939 or 0x1aa6 or 0x1bed)))
                 continue;
             using SafeFileHandle handle = Open(path, 0, 3, 0);
             devices.Add(Describe(path, handle));
@@ -89,7 +101,7 @@ public static class Hid
     {
         var attributes = new Attributes { Size = Marshal.SizeOf<Attributes>() };
         if (!HidD_GetAttributes(handle, ref attributes) ||
-            attributes.Vendor != 0x0b05 || attributes.Product != 0x19af)
+            attributes.Vendor != 0x0b05 || attributes.Product != AuraProduct(path))
             throw new IOException("HID VID/PID konnten nicht bestätigt werden.");
         if (!HidD_GetPreparsedData(handle, out nint data))
             throw new Win32Exception(Marshal.GetLastWin32Error());

@@ -4,9 +4,9 @@
 
 # AuraLite
 
-A native Windows 11 RGB controller for the ASUS TUF Gaming B850-Plus WiFi.
+A native Windows 11 ARGB controller for compatible ASUS Aura USB motherboards.
 
-[Download for Windows](https://github.com/Xploder/AuraLite/releases/latest) · [Build from source](#build-from-source) · [HID protocol notes](PROTOKOLL.md)
+[Download for Windows](https://github.com/Xploder/AuraLite/releases/latest) · [Build from source](#build-from-source) · [Hardware compatibility](docs/COMPATIBILITY.md)
 
 <img src="docs/auralite.jpg" width="520" alt="AuraLite in dark mode with its custom title bar, live controller status, color picker, lighting controls, profiles and language selector" />
 
@@ -24,25 +24,18 @@ A native Windows 11 RGB controller for the ASUS TUF Gaming B850-Plus WiFi.
 ## Getting started
 
 1. Download and run **AuraLite.exe** on Windows 11 x64. The single executable includes the .NET and Windows App SDK runtimes and can be renamed.
-2. AuraLite detects the controller automatically. The **Detect controller** button is available if you need to try again.
+2. AuraLite detects the controller automatically. Use **Detect controller** at the bottom to retry.
 3. Select an ARGB channel, then adjust the color, effect, brightness, or LED count. AuraLite applies the changes as you edit. A burst of slider or picker input is grouped into one hardware update per affected channel. Firmware effects use the controller's own brightness.
 
 Minimizing or closing the window keeps AuraLite running in the Windows notification area. Click the AuraLite icon to reopen it, or right-click it and choose **Quit** to exit.
 
-Profiles are stored in `%LOCALAPPDATA%\AuraLite\profiles.json`. Selecting a profile applies its channel, LED count, color, and effect when the controller is available. By default, the last selected profile loads into the editor at launch. Use **Startup profile** to choose a fixed profile instead. The **Restore lighting at launch and after sleep** checkbox is off by default. When enabled, AuraLite applies the startup profile after detecting the controller. After sleep, it restores the last lighting it successfully sent to the matching controller. For wake events, leave AuraLite running or minimized. To reapply after a Windows restart without opening the app manually, also enable **Open AuraLite at Windows sign-in**. The controller on the tested board falls back to its rainbow effect across sleep or reboot, so this is a software restore.
+Choose **New** to name and save the current settings. To update or delete the selected profile, open the profile actions menu. Profiles are stored in `%LOCALAPPDATA%\AuraLite\profiles.json`. Selecting a profile applies its channel, LED count, color, and effect when the controller is available. By default, the last selected profile loads into the editor at launch. Use **Startup profile** to choose a fixed profile instead. The **Restore lighting at launch and after sleep** checkbox is off by default. When enabled, AuraLite applies the startup profile after detecting the controller. After sleep, it restores the last lighting it successfully sent to the matching controller. For wake events, leave AuraLite running or minimized. To reapply after a Windows restart without opening the app manually, also enable **Open AuraLite at Windows sign-in**. The controller on the tested board falls back to its rainbow effect across sleep or reboot, so this is a software restore.
 
-## Hardware validation
+## Hardware compatibility
 
-| Item | Result |
-| --- | --- |
-| Tested system | ASUS TUF Gaming B850-Plus WiFi, Windows 11 x64 |
-| Controller | ASUS USB `0B05:19AF`, HID interface `MI_02` |
-| Firmware | `AULA3-AR32-0309`, three ARGB channels detected |
-| Static lighting | One pixel confirmed on ARGB 1 |
-| Color cycle | Confirmed on ARGB 1, including after AuraLite exited |
-| Controller state after sleep or reboot | Reported to fall back to rainbow |
+AuraLite supports compatible ASUS Aura USB HID controllers in the `0B05:19AF` family. It checks the HID report format, firmware and channel configuration when detecting a device. A motherboard advertised with Aura Sync can use a different controller. The compatibility guide lists reported ASUS models, related USB IDs, and a Windows check you can run yourself. [Compatibility and hardware IDs](docs/COMPATIBILITY.md)
 
-Before applying changes, AuraLite rechecks the detected controller and uses the documented lighting reports. Hardware writes are serialized, with no continuous refresh loop or flash-save command.
+Static ARGB lighting and the hardware color cycle were verified with firmware `AULA3-AR32-0309`. Firmware effects may differ across boards. AuraLite rechecks the detected controller before applying a change and does not use flash-save commands.
 
 ### Command-line probe
 

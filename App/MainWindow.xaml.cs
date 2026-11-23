@@ -108,7 +108,7 @@ public sealed partial class MainWindow : Window
             }
             RefreshProfiles();
             using RegistryKey? key = Registry.CurrentUser.OpenSubKey(RunKey);
-            Autostart.IsOn = key?.GetValue("AuraLite") is string;
+            Autostart.IsChecked = key?.GetValue("AuraLite") is string;
         }
         catch (Exception error)
         {
@@ -140,7 +140,6 @@ public sealed partial class MainWindow : Window
         bool wasReady = ready;
         ready = false;
         language = new UiLanguage(languageChoice);
-        ControllerHeading.Text = language[Phrase.Controller];
         LightingHeading.Text = language[Phrase.Lighting];
         ScanButton.Content = language[Phrase.Detect];
         Channels.Header = language[Phrase.Channel];
@@ -153,15 +152,17 @@ public sealed partial class MainWindow : Window
         LedCount.Header = language[Phrase.LedCount];
         ProfilesHeading.Text = language[Phrase.Profiles];
         ProfileName.PlaceholderText = language[Phrase.ProfileName];
+        NewProfileButton.Content = language[Phrase.NewProfile];
         SaveProfileButton.Content = language[Phrase.Save];
-        DeleteProfileButton.Content = language[Phrase.Delete];
+        CancelProfileButton.Content = language[Phrase.Cancel];
+        UpdateProfileItem.Text = language[Phrase.UpdateProfile];
+        DeleteProfileItem.Text = language[Phrase.Delete];
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(ProfileActions, language[Phrase.ProfileActions]);
         Profiles.PlaceholderText = language[Phrase.Load];
         StartupProfile.Header = language[Phrase.StartupProfile];
         RefreshStartupProfiles();
-        Autostart.Header = language[Phrase.Autostart];
+        AutostartLabel.Text = language[Phrase.Autostart];
         RestoreLightingLabel.Text = language[Phrase.RestoreLighting];
-        Autostart.OnContent = language[Phrase.On];
-        Autostart.OffContent = language[Phrase.Off];
         LanguagePicker.Header = language[Phrase.Language];
 
         LanguagePicker.Items.Clear();
@@ -349,7 +350,11 @@ public sealed partial class MainWindow : Window
     private void ShowDetected()
     {
         if (info is { } detected)
-            SetStatus(Phrase.Detected, FormatStatus(detected), InfoBarSeverity.Success);
+        {
+            bool canControl = detected.CanControl(1);
+            SetStatus(canControl ? Phrase.Detected : Phrase.ReadOnly, FormatStatus(detected),
+                canControl ? InfoBarSeverity.Success : InfoBarSeverity.Warning);
+        }
     }
 
     private static string FormatStatus(ControllerInfo detected) =>
@@ -483,17 +488,68 @@ public sealed partial class MainWindow : Window
             (int)Brightness.Value, (int)LedCount.Value);
     }
 
-    private void SaveClicked(object sender, RoutedEventArgs e)
+    private void NewProfileClicked(object sender, RoutedEventArgs e)
+    {
+        NewProfileForm.Visibility = Visibility.Visible;
+        NewProfileButton.IsEnabled = false;
+        ProfileName.Focus(FocusState.Programmatic);
+    }
+
+    private void CancelProfileClicked(object sender, RoutedEventArgs e) => CloseProfileForm();
+
+    private void ProfileNameKeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+    {
+        if (e.Key == Windows.System.VirtualKey.Enter)
+        {
+            e.Handled = true;
+            SaveNewProfile();
+        }
+        else if (e.Key == Windows.System.VirtualKey.Escape)
+        {
+            e.Handled = true;
+            CloseProfileForm();
+        }
+    }
+
+    private void CloseProfileForm()
+    {
+        NewProfileForm.Visibility = Visibility.Collapsed;
+        ProfileName.Text = "";
+        NewProfileButton.IsEnabled = true;
+        NewProfileButton.Focus(FocusState.Programmatic);
+    }
+
+    private void SaveClicked(object sender, RoutedEventArgs e) => SaveNewProfile();
+
+    private void SaveNewProfile()
     {
         try
         {
             string name = ProfileName.Text.Trim();
             if (name.Length == 0) throw new UiException(Phrase.MissingName);
-            var updated = new SortedDictionary<string, LightingProfile>(profiles, profiles.Comparer) { [name] = ReadEditor() };
-            SaveProfiles(updated);
-            SetActiveProfile(name);
-            SetStatus(Phrase.Saved, name, InfoBarSeverity.Success);
+            if (profiles.ContainsKey(name)) throw new UiException(Phrase.DuplicateProfile);
+            SaveProfile(name);
+            CloseProfileForm();
         }
+        catch (Exception error)
+        {
+            ShowError(Phrase.Profiles, error);
+            ProfileName.Focus(FocusState.Programmatic);
+        }
+    }
+
+    private void SaveProfile(string name)
+    {
+        var updated = new SortedDictionary<string, LightingProfile>(profiles, profiles.Comparer) { [name] = ReadEditor() };
+        SaveProfiles(updated);
+        SetActiveProfile(name);
+        SetStatus(Phrase.Saved, name, InfoBarSeverity.Success);
+    }
+
+    private void UpdateProfileClicked(object sender, RoutedEventArgs e)
+    {
+        if (Profiles.SelectedItem is not string name) return;
+        try { SaveProfile(name); }
         catch (Exception error) { ShowError(Phrase.Profiles, error); }
     }
 
@@ -501,7 +557,7 @@ public sealed partial class MainWindow : Window
     {
         try
         {
-            if (ProfileName.Text.Trim() is not { Length: > 0 } name || !profiles.ContainsKey(name)) return;
+            if (Profiles.SelectedItem is not string name || !profiles.ContainsKey(name)) return;
             var updated = new SortedDictionary<string, LightingProfile>(profiles, profiles.Comparer);
             updated.Remove(name);
             SaveProfiles(updated);
@@ -512,7 +568,6 @@ public sealed partial class MainWindow : Window
             };
             RefreshProfiles();
             SaveLighting();
-            ProfileName.Text = "";
             SetStatus(Phrase.Deleted, name, InfoBarSeverity.Informational);
         }
         catch (Exception error) { ShowError(Phrase.Profiles, error); }
@@ -571,7 +626,6 @@ public sealed partial class MainWindow : Window
         bool wasReady = ready;
         ready = false;
         Profiles.SelectedItem = name;
-        ProfileName.Text = name;
         LoadEditor(profile);
         ready = wasReady;
         return profile;
@@ -599,9 +653,9 @@ public sealed partial class MainWindow : Window
 
     private void ProfileSelected(object sender, SelectionChangedEventArgs e)
     {
+        if (ProfileActions is not null) ProfileActions.IsEnabled = Profiles.SelectedItem is string;
         if (!ready || Profiles.SelectedItem is not string name || !profiles.TryGetValue(name, out LightingProfile? profile)) return;
         SetActiveProfile(name);
-        ProfileName.Text = name;
         LoadEditor(profile);
         QueueLighting();
     }
@@ -625,7 +679,7 @@ public sealed partial class MainWindow : Window
         try
         {
             using RegistryKey key = Registry.CurrentUser.CreateSubKey(RunKey);
-            if (Autostart.IsOn)
+            if (Autostart.IsChecked == true)
             {
                 string executable = Environment.ProcessPath ?? throw new UiException(Phrase.MissingPath);
                 key.SetValue("AuraLite", $"\"{executable}\"");
@@ -635,7 +689,7 @@ public sealed partial class MainWindow : Window
         catch (Exception error)
         {
             ready = false;
-            Autostart.IsOn = !Autostart.IsOn;
+            Autostart.IsChecked = Autostart.IsChecked != true;
             ready = true;
             ShowError(Phrase.Autostart, error);
         }

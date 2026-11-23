@@ -1,6 +1,7 @@
 <Window x:Class="AuraLite.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AuraLite"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
     Title="AuraLite">
     <Window.SystemBackdrop>
@@ -18,19 +19,6 @@
         </TitleBar>
         <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Padding="28,16,28,22" Spacing="14" MaxWidth="900">
-                <Grid ColumnSpacing="12">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Spacing="3">
-                        <TextBlock x:Name="ControllerHeading" FontSize="27" FontWeight="SemiBold" TextWrapping="Wrap" />
-                        <TextBlock Text="ASUS TUF Gaming B850-Plus WiFi" Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                   TextWrapping="Wrap" />
-                    </StackPanel>
-                    <Button x:Name="ScanButton" Grid.Column="1" Click="ScanClicked" VerticalAlignment="Center" />
-                </Grid>
-                <InfoBar x:Name="Status" IsOpen="True" IsClosable="False" />
                 <Border CornerRadius="12" Padding="18" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <Grid x:Name="LightingGrid" ColumnSpacing="20">
@@ -81,33 +69,48 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <TextBox x:Name="ProfileName" MaxLength="60" />
-                            <Button x:Name="SaveProfileButton" Grid.Column="1" Click="SaveClicked" />
-                            <Button x:Name="DeleteProfileButton" Grid.Column="2" Click="DeleteClicked" />
+                            <ComboBox x:Name="Profiles" SelectionChanged="ProfileSelected" HorizontalAlignment="Stretch" />
+                            <Button x:Name="NewProfileButton" Grid.Column="1" Click="NewProfileClicked" />
+                            <Button x:Name="ProfileActions" Grid.Column="2" IsEnabled="False">
+                                <FontIcon Glyph="&#xE712;" />
+                                <Button.Flyout>
+                                    <MenuFlyout>
+                                        <MenuFlyoutItem x:Name="UpdateProfileItem" Click="UpdateProfileClicked" />
+                                        <MenuFlyoutItem x:Name="DeleteProfileItem" Click="DeleteClicked" />
+                                    </MenuFlyout>
+                                </Button.Flyout>
+                            </Button>
                         </Grid>
-                        <Grid ColumnSpacing="10">
+                        <Grid x:Name="NewProfileForm" ColumnSpacing="8" Visibility="Collapsed">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <ComboBox x:Name="Profiles" SelectionChanged="ProfileSelected" HorizontalAlignment="Stretch"
-                                      VerticalAlignment="Bottom" />
-                            <ComboBox x:Name="StartupProfile" Grid.Column="1" SelectionChanged="StartupProfileChanged"
-                                      HorizontalAlignment="Stretch" />
+                            <TextBox x:Name="ProfileName" MaxLength="60" KeyDown="ProfileNameKeyDown" />
+                            <Button x:Name="SaveProfileButton" Grid.Column="1" Click="SaveClicked" />
+                            <Button x:Name="CancelProfileButton" Grid.Column="2" Click="CancelProfileClicked" />
                         </Grid>
                     </StackPanel>
                 </Border>
-                <CheckBox x:Name="RestoreLighting" Checked="RestoreLightingChanged" Unchecked="RestoreLightingChanged">
-                    <TextBlock x:Name="RestoreLightingLabel" TextWrapping="Wrap" />
-                </CheckBox>
                 <Grid ColumnSpacing="16">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <ToggleSwitch x:Name="Autostart" Toggled="AutostartChanged" />
-                    <ComboBox x:Name="LanguagePicker" Grid.Column="1" MinWidth="160" SelectionChanged="LanguageChanged" />
+                    <ComboBox x:Name="StartupProfile" SelectionChanged="StartupProfileChanged" HorizontalAlignment="Stretch" />
+                    <ComboBox x:Name="LanguagePicker" Grid.Column="1" SelectionChanged="LanguageChanged" HorizontalAlignment="Stretch" />
                 </Grid>
+                <StackPanel Spacing="4">
+                    <local:SettingsCheckBox x:Name="RestoreLighting" Checked="RestoreLightingChanged" Unchecked="RestoreLightingChanged">
+                        <TextBlock x:Name="RestoreLightingLabel" TextWrapping="Wrap" />
+                    </local:SettingsCheckBox>
+                    <local:SettingsCheckBox x:Name="Autostart" Checked="AutostartChanged" Unchecked="AutostartChanged">
+                        <TextBlock x:Name="AutostartLabel" TextWrapping="Wrap" />
+                    </local:SettingsCheckBox>
+                </StackPanel>
+                <InfoBar x:Name="Status" IsOpen="True" IsClosable="False" />
+                <Button x:Name="ScanButton" Click="ScanClicked" HorizontalAlignment="Right" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

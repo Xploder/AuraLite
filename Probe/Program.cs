@@ -8,7 +8,7 @@ try
         IReadOnlyList<HidDevice> devices = Hid.List();
         foreach (HidDevice device in devices)
             Console.WriteLine($"{device}\nProtokollkandidat: {device.Supported}");
-        if (devices.Count == 0) Console.WriteLine("Kein HID-Gerät 0B05:19AF gefunden.");
+        if (devices.Count == 0) Console.WriteLine("Kein bekanntes ASUS-Aura-HID-Gerät gefunden.");
         return devices.Any(device => device.Supported) ? 0 : 1;
     }
 

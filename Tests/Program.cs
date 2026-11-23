@@ -45,4 +45,11 @@ Reject<ArgumentOutOfRangeException>(() => Controller.Build(info, 1, LightingMode
 Reject<IOException>(() => Controller.Parse(firmware, config[..64]), "Short config");
 config[0] = 0;
 Reject<IOException>(() => Controller.Parse(firmware, config), "Invalid header");
+var standard = new HidDevice(@"\\?\hid#vid_0b05&pid_19af&mi_02#collection", 0xff72, 0xa1, 65, 65, 0, true);
+Expect(standard.Supported, "Known HID descriptor");
+Expect((standard with { Path = @"\\?\hid#vid_0b05&pid_19af#collection" }).Supported, "Protocol match without interface number");
+Expect(!(standard with { Path = @"\\?\hid#vid_0b05&pid_1939&mi_02#collection" }).Supported, "Related product stays diagnostic-only");
+Expect(!(standard with { Path = @"\\?\hid#vid_0b05&pid_19aff&mi_02#collection" }).Supported, "Exact product ID");
+Expect(!(standard with { Usage = 1 }).Supported, "Wrong HID usage");
+Expect(!(standard with { AuraReport = false }).Supported, "Missing input or output report ID");
 Console.WriteLine("Protokolltests erfolgreich. Kein Hardwarezugriff.");

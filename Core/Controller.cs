@@ -41,7 +41,7 @@ public sealed class Controller : IAsyncDisposable
 
     public static async Task<Controller> OpenAsync()
     {
-        HidDevice[] matches = Hid.List().Where(device => device.Supported).ToArray();
+        HidDevice[] matches = Hid.List(includeRelated: false).Where(device => device.Supported).ToArray();
         if (matches.Length != 1)
             throw new IOException($"Genau eine passende Aura-HID-Schnittstelle erwartet. Gefunden: {matches.Length}.");
 

@@ -6,9 +6,9 @@ internal enum Phrase
 {
     Controller, Detect, Ready, Detecting, Detected, Unavailable, Lighting, Channel, ChooseChannel,
     Mode, Static, Cycle, Rainbow, Brightness, LedCount, Profiles, ProfileName, Save, Delete, Load,
-    Autostart, Language, WindowsDefault, On, Off, Settings,
+    Autostart, Language, WindowsDefault, Settings,
     SendFailed, ConfigChanged, MissingChannel, InvalidCount, MissingName,
-    Saved, Deleted, MissingPath, ErrorDetails, TrayOpen, TrayExit, RestoreLighting, LightingUpdated, StartupProfile, LastProfile
+    Saved, Deleted, MissingPath, ErrorDetails, TrayOpen, TrayExit, RestoreLighting, LightingUpdated, StartupProfile, LastProfile, NewProfile, Cancel, UpdateProfile, ProfileActions, DuplicateProfile, ReadOnly
 }
 
 internal sealed class UiLanguage
@@ -41,8 +41,6 @@ internal sealed class UiLanguage
         ["Open AuraLite at Windows sign-in", "AuraLite bei der Windows-Anmeldung öffnen", "Abrir AuraLite al iniciar sesión en Windows", "Ouvrir AuraLite à la connexion Windows", "Abrir o AuraLite ao iniciar sessão no Windows"],
         ["Language", "Sprache", "Idioma", "Langue", "Idioma"],
         ["Windows default", "Windows-Standard", "Predeterminado de Windows", "Par défaut de Windows", "Predefinição do Windows"],
-        ["On", "Ein", "Activado", "Activé", "Ativado"],
-        ["Off", "Aus", "Desactivado", "Désactivé", "Desativado"],
         ["Settings", "Einstellungen", "Configuración", "Paramètres", "Definições"],
         ["Transfer failed", "Übertragung fehlgeschlagen", "Error de transferencia", "Échec du transfert", "Falha na transferência"],
         ["The configuration changed. Detect the controller again.", "Die Konfiguration hat sich geändert. Controller erneut prüfen.", "La configuración ha cambiado. Detecta de nuevo el controlador.", "La configuration a changé. Détectez à nouveau le contrôleur.", "A configuração mudou. Detete novamente o controlador."],
@@ -58,7 +56,13 @@ internal sealed class UiLanguage
         ["Restore lighting at launch and after sleep", "Beleuchtung beim Start und nach Standby wiederherstellen", "Restaurar iluminación al iniciar y tras la suspensión", "Rétablir l’éclairage au démarrage et après veille", "Restaurar iluminação ao iniciar e após suspensão"],
         ["Lighting updated", "Beleuchtung aktualisiert", "Iluminación actualizada", "Éclairage mis à jour", "Iluminação atualizada"],
         ["Startup profile", "Startprofil", "Perfil de inicio", "Profil au démarrage", "Perfil de arranque"],
-        ["Last selected profile", "Zuletzt ausgewähltes Profil", "Último perfil seleccionado", "Dernier profil sélectionné", "Último perfil selecionado"]
+        ["Last selected profile", "Zuletzt ausgewähltes Profil", "Último perfil seleccionado", "Dernier profil sélectionné", "Último perfil selecionado"],
+        ["New", "Neu", "Nuevo", "Nouveau", "Novo"],
+        ["Cancel", "Abbrechen", "Cancelar", "Annuler", "Cancelar"],
+        ["Update selected profile", "Ausgewähltes Profil aktualisieren", "Actualizar perfil seleccionado", "Mettre à jour le profil sélectionné", "Atualizar perfil selecionado"],
+        ["Profile actions", "Profilaktionen", "Acciones de perfil", "Actions du profil", "Ações do perfil"],
+        ["A profile with that name already exists.", "Ein Profil mit diesem Namen gibt es bereits.", "Ya existe un perfil con ese nombre.", "Un profil porte déjà ce nom.", "Já existe um perfil com esse nome."],
+        ["Controller detected · lighting unavailable", "Controller erkannt · Lichtsteuerung nicht verfügbar", "Controlador detectado · iluminación no disponible", "Contrôleur détecté · éclairage indisponible", "Controlador detetado · iluminação indisponível"]
     ];
 
     private readonly int column;
