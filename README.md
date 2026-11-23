@@ -27,7 +27,7 @@ A native Windows 11 RGB controller for the ASUS TUF Gaming B850-Plus WiFi.
 2. AuraLite detects the controller automatically. The **Detect controller** button is available if you need to try again.
 3. Select an ARGB channel, then adjust the color, effect, brightness, or LED count. AuraLite applies the changes as you edit. A burst of slider or picker input is grouped into one hardware update per affected channel. Firmware effects use the controller's own brightness.
 
-Minimizing AuraLite hides the window in the Windows notification area. Click the AuraLite icon to reopen it, or right-click it and choose **Quit**. Closing the window exits the app.
+Minimizing or closing the window keeps AuraLite running in the Windows notification area. Click the AuraLite icon to reopen it, or right-click it and choose **Quit** to exit.
 
 Profiles are stored in `%LOCALAPPDATA%\AuraLite\profiles.json`. Selecting a profile applies its channel, LED count, color, and effect when the controller is available. By default, the last selected profile loads into the editor at launch. Use **Startup profile** to choose a fixed profile instead. The **Restore lighting at launch and after sleep** checkbox is off by default. When enabled, AuraLite applies the startup profile after detecting the controller. After sleep, it restores the last lighting it successfully sent to the matching controller. For wake events, leave AuraLite running or minimized. To reapply after a Windows restart without opening the app manually, also enable **Open AuraLite at Windows sign-in**. The controller on the tested board falls back to its rainbow effect across sleep or reboot, so this is a software restore.
 

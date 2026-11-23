@@ -34,6 +34,7 @@ public sealed partial class MainWindow : Window
     private bool scanning;
     private bool sending;
     private bool closing;
+    private bool quitting;
     private bool ready;
     private int preferredChannel = 1;
     private LightingProfile? startupRetry;
@@ -53,7 +54,14 @@ public sealed partial class MainWindow : Window
         string iconPath = Path.Combine(AppContext.BaseDirectory, "Assets", "AuraLite.ico");
         AppWindow.SetIcon(iconPath);
         tray = new NativeTray(WinRT.Interop.WindowNative.GetWindowHandle(this), iconPath,
-            RestoreWindow, Close, ScheduleResume, () => language[Phrase.TrayOpen], () => language[Phrase.TrayExit]);
+            RestoreWindow, Quit, ScheduleResume, () => language[Phrase.TrayOpen], () => language[Phrase.TrayExit]);
+
+        AppWindow.Closing += (_, args) =>
+        {
+            if (quitting || !tray.IsAvailable) return;
+            args.Cancel = true;
+            tray.Hide();
+        };
         Closed += (_, _) =>
         {
             closing = true;
@@ -109,6 +117,12 @@ public sealed partial class MainWindow : Window
         ApplyLanguage();
         ready = true;
         UpdateEffectControls();
+    }
+
+    private void Quit()
+    {
+        quitting = true;
+        Close();
     }
 
     internal void RestoreWindow()
