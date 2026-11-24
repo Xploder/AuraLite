@@ -27,7 +27,7 @@ These are documented examples. Verify the hardware ID on your system even if you
 
 1. Open **Device Manager**. Find **AURA LED Controller** or its vendor-defined HID device.
 2. In **Properties → Details → Hardware Ids**, check for `VID_0B05&PID_19AF`. The HID collection also reports `HID\VID_0B05&UP:FF72_U:00A1`. A composite controller can show a separate WinUSB entry and a HID entry. AuraLite only uses the HID entry.
-3. Run AuraLite to check the firmware and ARGB channels. The status and **Detect controller** button are at the bottom. A matching USB ID is a candidate. Successful detection means the HID descriptor and both protocol queries were accepted. If AuraLite reports that lighting is unavailable, the firmware did not provide an unambiguous ARGB channel layout.
+3. Run AuraLite to check the firmware and ARGB channels. Controller status appears at the top. The **Detect controller** button is at the bottom. A matching USB ID is a candidate. Successful detection means the HID descriptor and both protocol queries were accepted. If AuraLite reports that lighting is unavailable, the firmware did not provide an unambiguous ARGB channel layout.
 
 The following built-in PowerShell command lists connected ASUS HID collections with the expected usage. It only reads Windows device metadata. See [Microsoft's PnPUtil examples](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/pnputil-examples).
 

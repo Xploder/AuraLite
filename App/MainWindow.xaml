@@ -19,6 +19,7 @@
         </TitleBar>
         <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Padding="28,16,28,22" Spacing="14" MaxWidth="900">
+                <InfoBar x:Name="Status" IsOpen="True" IsClosable="False" />
                 <Border CornerRadius="12" Padding="18" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <Grid x:Name="LightingGrid" ColumnSpacing="20">
@@ -109,7 +110,6 @@
                         <TextBlock x:Name="AutostartLabel" TextWrapping="Wrap" />
                     </local:SettingsCheckBox>
                 </StackPanel>
-                <InfoBar x:Name="Status" IsOpen="True" IsClosable="False" />
                 <Button x:Name="ScanButton" Click="ScanClicked" HorizontalAlignment="Right" />
             </StackPanel>
         </ScrollViewer>
