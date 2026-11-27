@@ -107,13 +107,12 @@ public sealed partial class MainWindow : Window
                             profiles[item.Key] = item.Value;
             }
             RefreshProfiles();
-            using RegistryKey? key = Registry.CurrentUser.OpenSubKey(RunKey);
-            Autostart.IsChecked = key?.GetValue("AuraLite") is string;
         }
         catch (Exception error)
         {
             ShowError(Phrase.Settings, error);
         }
+        LoadAutostart();
         ApplyLanguage();
         ready = true;
         UpdateEffectControls();
@@ -673,6 +672,30 @@ public sealed partial class MainWindow : Window
         ready = wasReady;
     }
 
+    private void LoadAutostart()
+    {
+        try
+        {
+            using RegistryKey? key = Registry.CurrentUser.OpenSubKey(RunKey);
+            string? command = key?.GetValue("AuraLite") as string;
+            Autostart.IsChecked = command is not null;
+            if (Environment.ProcessPath is { } executable &&
+                string.Equals(command?.Trim(), $"\"{executable}\"", StringComparison.OrdinalIgnoreCase))
+            {
+                // Upgrade the previous command for this copy. Another installation keeps its own entry.
+                using RegistryKey? writable = Registry.CurrentUser.OpenSubKey(RunKey, writable: true);
+                if (writable is not null && writable.GetValue("AuraLite") as string == command)
+                    writable.SetValue("AuraLite", AutostartCommand(executable));
+            }
+        }
+        catch (Exception error)
+        {
+            ShowError(Phrase.Autostart, error);
+        }
+    }
+
+    private static string AutostartCommand(string executable) => $"\"{executable}\" {App.TrayArgument}";
+
     private void AutostartChanged(object sender, RoutedEventArgs e)
     {
         if (!ready) return;
@@ -682,7 +705,7 @@ public sealed partial class MainWindow : Window
             if (Autostart.IsChecked == true)
             {
                 string executable = Environment.ProcessPath ?? throw new UiException(Phrase.MissingPath);
-                key.SetValue("AuraLite", $"\"{executable}\"");
+                key.SetValue("AuraLite", AutostartCommand(executable));
             }
             else key.DeleteValue("AuraLite", throwOnMissingValue: false);
         }

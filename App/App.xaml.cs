@@ -4,6 +4,8 @@ namespace AuraLite;
 
 public partial class App : Application
 {
+    internal const string TrayArgument = "--tray";
+
     private MainWindow? window;
     private EventWaitHandle? activation;
     private Mutex? instance;
@@ -13,11 +15,14 @@ public partial class App : Application
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
+        bool startInTray = Environment.GetCommandLineArgs().Skip(1)
+            .Contains(TrayArgument, StringComparer.OrdinalIgnoreCase);
+
         activation = new EventWaitHandle(false, EventResetMode.AutoReset, "Local\\AuraLite.ShowWindow");
         instance = new Mutex(false, "Local\\AuraLite.SingleInstance", out bool first);
         if (!first)
         {
-            activation.Set();
+            if (!startInTray) activation.Set();
             instance.Dispose();
             activation.Dispose();
             Exit();
@@ -36,7 +41,7 @@ public partial class App : Application
             instance.Dispose();
             window = null;
         };
-        main.Activate();
+        if (!startInTray) main.Activate();
         _ = main.DetectAtStartupAsync();
     }
 }

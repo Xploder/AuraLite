@@ -38,7 +38,7 @@ internal sealed class UiLanguage
         ["Save", "Speichern", "Guardar", "Enregistrer", "Guardar"],
         ["Delete", "Löschen", "Eliminar", "Supprimer", "Eliminar"],
         ["Load a saved profile", "Gespeichertes Profil laden", "Cargar un perfil guardado", "Charger un profil enregistré", "Carregar um perfil guardado"],
-        ["Open AuraLite at Windows sign-in", "AuraLite bei der Windows-Anmeldung öffnen", "Abrir AuraLite al iniciar sesión en Windows", "Ouvrir AuraLite à la connexion Windows", "Abrir o AuraLite ao iniciar sessão no Windows"],
+        ["Start AuraLite in the tray at Windows sign-in", "AuraLite bei der Windows-Anmeldung im Tray starten", "Iniciar AuraLite en la bandeja al iniciar sesión en Windows", "Lancer AuraLite dans la zone de notification à la connexion Windows", "Iniciar o AuraLite na área de notificação ao iniciar sessão no Windows"],
         ["Language", "Sprache", "Idioma", "Langue", "Idioma"],
         ["Windows default", "Windows-Standard", "Predeterminado de Windows", "Par défaut de Windows", "Predefinição do Windows"],
         ["Settings", "Einstellungen", "Configuración", "Paramètres", "Definições"],
